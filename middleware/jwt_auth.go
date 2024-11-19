@@ -4,8 +4,24 @@ import (
 	"context"
 	"net/http"
 	"strings"
+	"time"
 	"weblazyteam-api/utils"
+
+	"github.com/ulule/limiter/v3"
+	"github.com/ulule/limiter/v3/drivers/middleware/stdlib"
+	"github.com/ulule/limiter/v3/drivers/store/memory"
 )
+
+func RateLimitMiddleware(next http.Handler) http.Handler {
+	rate := limiter.Rate{
+		Period: 1 * time.Minute,
+		Limit:  10,
+	}
+	store := memory.NewStore()
+	rateLimiter := limiter.New(store, rate)
+
+	return stdlib.NewMiddleware(rateLimiter).Handler(next)
+}
 
 // Ключи для передачи данных контекста
 type contextKey string

@@ -1,54 +1,48 @@
-# Укажите имя вашего основного файла
+# Переменные
 APP_NAME=weblazyteam-api
-MAIN_FILE=main.go
+SRC_DIR=.
+TEST_REPORT=test-report.out
 
-# Команды для работы с сервером
-.PHONY: run
-run: ## Запуск сервера
-	@echo "Запуск сервера..."
-	go run $(MAIN_FILE)
-
-.PHONY: build
-build: ## Сборка исполняемого файла
+# Компиляция
+build:
 	@echo "Сборка приложения..."
-	go build -o $(APP_NAME)
+	@go build -o $(APP_NAME)
+	@echo "Сборка завершена."
 
-.PHONY: start
-start: build ## Сборка и запуск исполняемого файла
-	@echo "Запуск собранного приложения..."
-	./$(APP_NAME)
+# Запуск
+run: build
+	@echo "Запуск сервера..."
+	@./$(APP_NAME)
 
-.PHONY: clean
-clean: ## Очистка собранного файла
-	@echo "Очистка проекта..."
-	rm -f $(APP_NAME)
+# Запуск тестов
+test: test-unit test-integration
 
-# Команды для проверки и тестирования
-.PHONY: test
-test: ## Запуск тестов
-	@echo "Запуск тестов..."
-	go test ./... -v
+test-unit:
+	@echo "Запуск юнит-тестов..."
+	@go test $(SRC_DIR)/... -run Unit -v
 
-.PHONY: lint
-lint: ## Запуск линтера
-	@echo "Проверка кода линтером..."
-	golangci-lint run
+test-integration:
+	@echo "Запуск интеграционных тестов..."
+	@go test $(SRC_DIR)/... -run Integration -v
 
-.PHONY: fmt
-fmt: ## Форматирование кода
-	@echo "Форматирование Go-кода..."
-	go fmt ./...
+# Тесты с генерацией отчета
+test-report:
+	@echo "Запуск всех тестов и генерация отчета..."
+	@go test $(SRC_DIR)/... -cover -coverprofile=$(TEST_REPORT)
+	@go tool cover -html=$(TEST_REPORT) -o coverage.html
+	@echo "Отчет о покрытии тестами сгенерирован: coverage.html"
 
-.PHONY: vet
-vet: ## Проверка кода на ошибки
-	@echo "Анализ Go-кода..."
-	go vet ./...
+# Линтеры
+lint:
+	@echo "Запуск линтеров..."
+	@golangci-lint run
 
-.PHONY: check
-check: fmt vet lint ## Форматирование, линтинг и анализ кода
-	@echo "Проверка кода завершена."
+# Очистка
+clean:
+	@echo "Очистка старых сборок..."
+	@rm -f $(APP_NAME)
+	@rm -f $(TEST_REPORT)
+	@rm -f coverage.html
+	@echo "Очистка завершена."
 
-.PHONY: help
-help: ## Вывод доступных команд
-	@echo "Доступные команды:"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
+.PHONY: build run test test-unit test-integration test-report lint clean

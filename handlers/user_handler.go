@@ -7,7 +7,11 @@ import (
 	"weblazyteam-api/database"
 	"weblazyteam-api/models"
 	"weblazyteam-api/utils"
+
+	"github.com/go-playground/validator/v10"
 )
+
+var validate = validator.New()
 
 // Регистрация пользователя
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
@@ -16,6 +20,12 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	// Декодирование JSON из тела запроса
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
+		return
+	}
+
+	// Проверка на валидность входных данных
+	if err := validate.Struct(user); err != nil {
+		http.Error(w, "Некорректные данные: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 

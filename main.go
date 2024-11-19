@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	// Инициализация базы данных
+	// Инициализация базы данпщных
 	database.Connect()
 
 	// Настройка маршрутов
@@ -19,4 +19,5 @@ func main() {
 	if err := http.ListenAndServe(":8080", router); err != nil {
 		log.Fatal("Failed to start server:", err)
 	}
+
 }
