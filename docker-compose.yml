@@ -1,0 +1,12 @@
+services:
+  api:  # Сервис для вашего API
+    build: .  # Сборка образа API из Dockerfile
+    ports:
+      - "8080:8080"  # Проброс порта: 8080 на хосте к 8080 в контейнере
+    environment:  # Переменные окружения для API
+      DB_HOST: host.docker.internal  # Локальный SQL Server
+      DB_PORT: 1433  # Порт SQL Server
+      DB_USER: ""  # Удалены учетные данные для Windows аутентификации
+      DB_PASSWORD: ""
+      DB_NAME: weblazyteam  # Название базы данных
+    network_mode: "host"  # Использует сеть хоста для доступа к локальному SQL Server
