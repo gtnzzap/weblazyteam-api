@@ -1,5 +1,0 @@
-# Исключение файлов и директорий
-.git
-node_modules
-/tmp
-.DS_Store

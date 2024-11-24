@@ -6,7 +6,7 @@ services:
     environment:  # Переменные окружения для API
       DB_HOST: host.docker.internal  # Локальный SQL Server
       DB_PORT: 1433  # Порт SQL Server
-      DB_USER: ""  # Удалены учетные данные для Windows аутентификации
-      DB_PASSWORD: ""
+      DB_USER: "petr" 
+      DB_PASSWORD: "petr"
       DB_NAME: weblazyteam  # Название базы данных
     network_mode: "host"  # Использует сеть хоста для доступа к локальному SQL Server

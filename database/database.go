@@ -12,7 +12,7 @@ var DB *sql.DB
 // Подключение к базе данных
 func Connect() {
 	var err error
-	connString := "sqlserver://localhost:1433?database=weblazyteam&trusted_connection=true"
+	connString := "sqlserver://petr:petr@host.docker.internal:1433?database=weblazyteam"
 	DB, err = sql.Open("sqlserver", connString)
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
